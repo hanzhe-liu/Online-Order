@@ -11,11 +11,14 @@ from io import BytesIO
 import time
 import matplotlib.pyplot as plt 
 from pymongo import MongoClient
+from pymongo.errors import ConnectionFailure
+from datetime import datetime
 
-
-mongo_url = "mongodb+srv://mingruzhu01:NU2ndaMoRKClOd8Y@cluster0.jqldqw3.mongodb.net/?retryWrites=true&w=majority"
+app = Flask(__name__)
+mongo_url = "mongodb+srv://mingruzhu01:GBfvriyxKr2XKT8e@cluster0.jqldqw3.mongodb.net/?retryWrites=true&w=majority"
 client = MongoClient(mongo_url)
-db = client['madHack']
+db = client["madHack"]
+#db = client["madHack"]
 
 ABcount = 0
 Avisit = 0
@@ -24,7 +27,7 @@ last_request_time = dict()
 visitor_ips = []
 num_subscribed = 0
 
-app = Flask(__name__)
+
 df = pd.read_csv("main.csv")
 
 
@@ -94,15 +97,32 @@ user_data = {
 }
 
 @app.route('/create_account', methods=['POST'])
-def create_account():
+def create_acount():
+    # 创建一个新用户
+    users_collection = db['User']
     username = request.form.get('username')
+    if not username:
+        print("no username")
+    email = request.form.get('email')
     password = request.form.get('password')
-
-    if username not in user_data:
-        user_data[username] = password
-        return jsonify(success=True)
+    print("here2")
+    user = users_collection.find_one({"username": username})
+    print("here3")
+    if user:
+        print("找到用户：", user)
+        return jsonify(success=False)
     else:
-        return jsonify(success=False, message="Username already exists.")
+        new_user = {
+            "username": username,
+            "email": email,
+            "password": password,  # 注意：实际应用中应使用哈希密码
+            "register_date": datetime.utcnow(),
+            "last_login_time": datetime.utcnow(),
+            "status": "active"
+        }
+    # 将新用户插入到 MongoDB 集合
+        users_collection.insert_one(new_user)
+        return jsonify(success=True)
 
 @app.route('/create_account.html')
 def create_account_page():
@@ -112,12 +132,12 @@ def create_account_page():
 
 @app.route('/submit', methods=['POST'])
 def login():
+    users_collection = db['User']
     username = request.form.get('username')
     password = request.form.get('password')
-
-    # Check if username and password exist in user_data
-    if username in user_data and user_data[username] == password:
-        # You can set a session variable here to keep the user logged in
+    user = users_collection.find_one({"username": username})
+    if user and user['password'] == password:
+        print("yeah")
         return jsonify(success=True)
     else:
         return jsonify(success=False)

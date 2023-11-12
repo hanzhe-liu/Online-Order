@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure
 from datetime import datetime
+#from db_operation import create_acount, login
 
 app = Flask(__name__)
 mongo_url = "mongodb+srv://mingruzhu01:GBfvriyxKr2XKT8e@cluster0.jqldqw3.mongodb.net/?retryWrites=true&w=majority"
@@ -95,7 +96,7 @@ user_data = {
     "user1": "password1",
     "user2": "password2"
 }
-
+'''
 @app.route('/create_account', methods=['POST'])
 def create_acount():
     # 创建一个新用户
@@ -123,7 +124,7 @@ def create_acount():
     # 将新用户插入到 MongoDB 集合
         users_collection.insert_one(new_user)
         return jsonify(success=True)
-
+'''
 @app.route('/create_account.html')
 def create_account_page():
     with open("create_account.html") as f:

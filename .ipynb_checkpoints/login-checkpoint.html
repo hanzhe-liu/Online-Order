@@ -1,0 +1,41 @@
+<html>
+<head>
+    <!-- ... existing head content ... -->
+<!--     <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#loginButton").click(function(e) {
+                e.preventDefault(); // Prevents the default form submission
+                loginUser();
+            });
+        });
+
+        function loginUser() {
+            var username = $("#username").val();
+            var password = $("#password").val();
+
+            // Send a POST request to the /login route
+            $.post("login", { username: username, password: password })
+            .done(function(data) {
+                if (data.success) {
+                    window.location.href = "/"; // Redirect to the home page
+                } else {
+                    alert("Username or password is incorrect!");
+                }
+            }).fail(function() {
+                alert("POST failed");
+            });
+        }
+    </script> -->
+</head>
+<body>
+    <h1>Login</h1>
+    <form method="post">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br>
+        <button type="button" id="loginButton">Login</button>
+    </form>
+</body>
+</html>

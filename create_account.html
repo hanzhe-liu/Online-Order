@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Account</title>
+</head>
+<body>
+    <h1>Create Account</h1>
+    <form id="createAccountForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br>
+        <input type="submit" value="Create Account">
+    </form>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#createAccountForm").submit(function(event) {
+                event.preventDefault();
+                var username = $("#username").val();
+                var password = $("#password").val();
+
+                $.post({
+                    type: "POST",
+                    url: "create_account",
+                    data: { username: username, password: password },
+                    dataType: "json"
+                }).done(function(response) {
+                    if(response.success) {
+                        alert("Account created successfully!");
+                    } else {
+                        alert("Failed to create account.");
+                    }
+                }).fail(function() {
+                    alert("Error while creating account.");
+                });
+            });
+        });
+    </script>
+</body>
+</html>
